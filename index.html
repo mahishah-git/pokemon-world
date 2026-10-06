@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pokémon World | Prof. Oak's Computer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Three.js + VRM loader from CDN -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/",
+      "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/",
+      "@pixiv/three-vrm": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@3/lib/three-vrm.module.min.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="computer">
+
+    <header class="title-bar">
+      <span class="leds" aria-hidden="true"><i class="led r"></i><i class="led y"></i><i class="led g"></i></span>
+      <div>
+        <h1>PROF. OAK'S COMPUTER</h1>
+        <p class="sub">TRAINER DATABASE</p>
+      </div>
+    </header>
+
+    <main class="layout">
+
+      <!-- LEFT: avatar screen -->
+      <section class="panel avatar-panel" id="sec-avatar" aria-label="Trainer avatar">
+        <div class="screen avatar-screen">
+          <canvas id="avatar-canvas"></canvas>
+          <p id="avatar-msg" class="avatar-msg">LOADING TRAINER...</p>
+        </div>
+      </section>
+
+      <!-- RIGHT: trainer info -->
+      <section class="panel info-panel" id="sec-trainer" aria-label="Trainer information">
+        <h2>TRAINER CARD</h2>
+        <dl class="info">
+          <dt>NAME</dt><dd>MAHI SHAH</dd>
+          <dt>BIRTHDAY</dt><dd>04 DECEMBER</dd>
+          <dt>TRAINER ID</dt><dd>MS-0404</dd>
+          <dt>REGISTRATION NO</dt><dd data-fill="regNo"></dd>
+          <dt>CURRENT STATUS</dt><dd>STUDENT MAJORING IN COMPUTER SCIENCE ENGINEERING @ INDUS UNIVERSITY</dd>
+          <dt>CONTACT</dt>
+          <dd class="contact-row">
+            <a data-link="email" class="btn-small">EMAIL</a>
+            <a data-link="github" class="btn-small" target="_blank" rel="noopener">GITHUB</a>
+            <a data-link="instagram" class="btn-small" target="_blank" rel="noopener">INSTAGRAM</a>
+          </dd>
+        </dl>
+      </section>
+
+      <!-- BADGES -->
+      <section class="panel badges-panel" id="sec-badges" aria-label="Badges">
+        <h2>BADGES</h2>
+        <ul class="badges">
+          <li><img src="umbreon.gif" alt="Umbreon"><span>Blender / 3D</span></li>
+          <li><img src="sylveon.gif" alt="Sylveon"><span>Figma</span></li>
+          <li><img src="leafeon.gif" alt="Leafeon"><span>Three.js</span></li>
+          <li><img src="jolteon.gif" alt="Jolteon"><span>HTML</span></li>
+          <li><img src="flareon.gif" alt="Flareon"><span>CSS</span></li>
+          <li><img src="vaporeon.gif" alt="Vaporeon"><span>JavaScript</span></li>
+        </ul>
+      </section>
+
+      <!-- POKEDEX BUTTON + KEYPAD -->
+      <section class="panel controls" aria-label="Controls">
+        <button id="open-dex" class="dex-device" type="button">
+          <span class="dex-lens" aria-hidden="true"></span>
+          <span class="dex-label">POKÉDEX<small>PRESS TO OPEN</small></span>
+        </button>
+
+        <div class="keypad" role="group" aria-label="Pokédex keypad">
+          <button type="button" data-key="1"><b>1</b><small>TRAINER</small></button>
+          <button type="button" data-key="2"><b>2</b><small>POKÉDEX</small></button>
+          <button type="button" data-key="3"><b>3</b><small>BADGES</small></button>
+          <button type="button" data-key="4"><b>4</b><small>PROJECTS</small></button>
+          <button type="button" data-key="0"><b>0</b><small>HOME</small></button>
+          <button type="button" data-key="Escape" class="b-btn"><b>B</b><small>BACK</small></button>
+        </div>
+      </section>
+
+      <!-- POKEBALL PROJECT RAIL (built by script.js) -->
+      <aside class="panel rail" id="sec-projects" aria-label="Projects">
+        <h2>PROJECTS</h2>
+        <ol id="ball-list" class="ball-list"></ol>
+      </aside>
+
+    </main>
+  </div>
+
+  <!-- POKEDEX OVERLAY -->
+  <div id="dex" class="dex-overlay" hidden>
+    <div class="dex-shell" role="dialog" aria-modal="true" aria-label="Pokédex">
+      <div class="dex-top">
+        <span class="dex-lens big" aria-hidden="true"></span>
+        <span class="leds" aria-hidden="true"><i class="led r"></i><i class="led y"></i><i class="led g"></i></span>
+        <button id="close-dex" class="close" type="button" aria-label="Close Pokédex">X</button>
+      </div>
+
+      <div class="dex-tabs" role="tablist">
+        <button role="tab" data-tab="trainer" class="active">TRAINER</button>
+        <button role="tab" data-tab="languages">LANGUAGE</button>
+        <button role="tab" data-tab="abilities">ABILITY</button>
+        <button role="tab" data-tab="tech">TECH</button>
+        <button role="tab" data-tab="contact">CONTACT</button>
+      </div>
+
+      <div class="screen dex-screen">
+        <section data-page="trainer">
+          <h3>TRAINER DATA</h3>
+          <dl class="info">
+            <dt>NAME</dt><dd>Mahi Shah</dd>
+            <dt>BIRTHDAY</dt><dd>04 December</dd>
+            <dt>TRAINER ID</dt><dd>MS-041204</dd>
+            <dt>REGISTRATION NO</dt><dd data-fill="regNo"></dd>
+            <dt>CURRENT STATUS</dt><dd>Student majoring in Computer Science Engineering @ Indus University</dd>
+          </dl>
+        </section>
+
+        <section data-page="languages" hidden>
+          <h3>LANGUAGE ABILITIES</h3>
+          <ul class="dex-list">
+            <li>English</li><li>French</li><li>Hindi</li><li>Gujarati</li>
+            <li>Spanish <em>Basic</em></li><li>Japanese <em>Basic</em></li>
+          </ul>
+        </section>
+
+        <section data-page="abilities" hidden>
+          <h3>TRAINER ABILITIES</h3>
+          <ul class="dex-list">
+            <li>Interpersonal Skills</li><li>Problem Solving</li><li>Active Listener</li>
+          </ul>
+        </section>
+
+        <section data-page="tech" hidden>
+          <h3>TECHNICAL SKILLS</h3>
+          <ul class="dex-list">
+            <li>Figma</li><li>HTML</li><li>CSS</li><li>JavaScript</li><li>Blender</li><li>Three.js</li>
+          </ul>
+        </section>
+
+        <section data-page="contact" hidden>
+          <h3>CONTACT</h3>
+          <ul class="dex-list links">
+            <li><a data-link="email">Email</a></li>
+            <li><a data-link="github" target="_blank" rel="noopener">GitHub</a></li>
+            <li><a data-link="instagram" target="_blank" rel="noopener">Instagram</a></li>
+          </ul>
+        </section>
+      </div>
+      <p class="dex-hint">← → CHANGE PAGE &nbsp; ESC CLOSE</p>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
